@@ -7,14 +7,13 @@ sawBladeHeight = 7/7 * 25.4;
 jigFenceEndX = 100;
 jigFenceEndWallY = 6;
 
-jigHandEndX = 100;
-
 // jigFenceToBladeMinY = 50;
 // jigFenceToBladeMaxY = 100;
 // jigFenceToBladeCtrY = (jigFenceToBladeMinY + jigFenceToBladeMaxY)/2;
 
 
 jigFenceToBladeCtrY = 50; //(jigFenceToBladeMinY + jigFenceToBladeMaxY)/2;
+bladeCutoutY = 60;
 // jigFenceToBladeMinY = 50;
 // jigFenceToBladeMaxY = 100;
 
@@ -26,6 +25,8 @@ jigPullyWhipCtrZ = pulleyWhipOD/2;
 
 jigCornerRadiusFenceEnd = 8;
 jigCornerRadiusHandEnd = 20;
+
+jigHandEndX = pulleyWhipOD + jigCornerRadiusHandEnd;
 
 module itemModule()
 {
@@ -44,12 +45,21 @@ module body()
 	{
 		hull()
 		{
-			// Fence End:
+			// Fence end:
 			fenceEndOffsetX = jigFenceEndX/2 - jigCornerRadiusFenceEnd;
-			jigFenceEndOffsetY = jigFenceToBladeCtrY; // - jigCornerRadiusFenceEnd; // + jigCornerRadiusFenceEnd;
+			jigFenceEndOffsetY = jigFenceToBladeCtrY;
 			doubleX() translate([fenceEndOffsetX, jigFenceEndOffsetY, 0]) cylinder(r=jigCornerRadiusFenceEnd, h=jigZ);
+
+			// Hand end:
+			handEndOffsetX = jigHandEndX/2 - jigCornerRadiusFenceEnd;
+			jighandEndOffsetY = -jigBladeTohandEndY;
+			doubleX() translate([handEndOffsetX, jighandEndOffsetY, 0]) cylinder(r=jigCornerRadiusHandEnd, h=jigZ);
 		}
 
+		// Remove the blade cutout:
+		tcu([-200, -bladeCutoutY/2, -1], [400, bladeCutoutY, sawBladeHeight+1]);
+
+		// Trim the fence end:
 		tcu([-200, jigFenceToBladeCtrY, -200], 400);
 	}
 }
