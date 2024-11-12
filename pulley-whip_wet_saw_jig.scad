@@ -29,7 +29,6 @@ module itemModule()
 		body();
 
 		pulleyWhip();
-		
 	}
 }
 
@@ -52,9 +51,6 @@ module body()
 
 		// Remove the blade cutout:
 		tcu([-200, -bladeCutoutY/2, -10], [400, bladeCutoutY, sawBladeHeight+10 + 1]);
-
-		// Trim the fence end:
-		// tcu([-200, jigFenceToBladeCtrY, -200], 400);
 	}
 }
 
