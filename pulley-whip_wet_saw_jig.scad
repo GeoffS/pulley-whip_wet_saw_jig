@@ -17,7 +17,7 @@ jigZ = pulleyWhipOD + 15;
 
 jigPullyWhipCtrZ = pulleyWhipOD/2;
 
-jigCornerRadiusFenceEnd = 8;
+jigCornerRadiusFenceEnd = 5;
 jigCornerRadiusHandEnd = 20;
 
 jigHandEndX = pulleyWhipOD + jigCornerRadiusHandEnd;
@@ -42,7 +42,7 @@ module body()
 			// Fence end:
 			fenceEndOffsetX = jigFenceEndX/2 - jigCornerRadiusFenceEnd;
 			jigFenceEndOffsetY = jigFenceToBladeCtrY;
-			doubleX() translate([fenceEndOffsetX, jigFenceEndOffsetY, 0]) cylinder(r=jigCornerRadiusFenceEnd, h=jigZ);
+			doubleX() translate([fenceEndOffsetX, jigFenceEndOffsetY-jigCornerRadiusFenceEnd, 0]) cylinder(r=jigCornerRadiusFenceEnd, h=jigZ);
 
 			// Hand end:
 			handEndOffsetX = jigHandEndX/2 - jigCornerRadiusFenceEnd;
@@ -54,7 +54,7 @@ module body()
 		tcu([-200, -bladeCutoutY/2, -10], [400, bladeCutoutY, sawBladeHeight+10 + 1]);
 
 		// Trim the fence end:
-		tcu([-200, jigFenceToBladeCtrY, -200], 400);
+		// tcu([-200, jigFenceToBladeCtrY, -200], 400);
 	}
 }
 
@@ -96,16 +96,16 @@ module clip(d=0)
 
 if(developmentRender)
 {
-	// rotate([0,180,0])
-	{
-		display() itemModule();
-		displayGhost() sawGhost();
-		displayGhost() pulleyWhipGhost();
-	}
+	// display() itemModule();
+	// displayGhost() sawGhost();
+	// displayGhost() pulleyWhipGhost();
+
+	translate([0,0,jigZ]) rotate([0,180,0]) display() itemModule();
+	displayGhost() printBedGhost();
 }
 else
 {
-	itemModule();
+	rotate([0,180,0]) itemModule();
 }
 
 module sawGhost()
@@ -123,5 +123,16 @@ module sawGhost()
 module pulleyWhipGhost()
 {
 	pwd = 22;
-	translate([0, jigFenceToBladeCtrY, pwd/2]) rotate([90,0,0]) cylinder(d=pwd, h=250);
+	translate([0, jigFenceToBladeCtrY-jigFenceEndWallY, pwd/2]) rotate([90,0,0]) cylinder(d=pwd, h=250);
+}
+
+module printBedGhost()
+{
+	// Bambu A1:
+	x = 256;
+	y = 256;
+
+	z = 3;
+
+	tcu([-x/2,-y/2-30,-z], [x,y,z]);
 }
