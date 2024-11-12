@@ -2,20 +2,14 @@ include <../OpenSCADdesigns/MakeInclude.scad>
 
 pulleyWhipOD = 22;
 
-sawBladeHeight = 7/7 * 25.4;
+sawBladeHeight = 7/8 * 25.4;
+echo("sawBladeHeight = ", sawBladeHeight);
 
 jigFenceEndX = 100;
 jigFenceEndWallY = 6;
 
-// jigFenceToBladeMinY = 50;
-// jigFenceToBladeMaxY = 100;
-// jigFenceToBladeCtrY = (jigFenceToBladeMinY + jigFenceToBladeMaxY)/2;
-
-
-jigFenceToBladeCtrY = 50; //(jigFenceToBladeMinY + jigFenceToBladeMaxY)/2;
+jigFenceToBladeCtrY = 50;
 bladeCutoutY = 60;
-// jigFenceToBladeMinY = 50;
-// jigFenceToBladeMaxY = 100;
 
 jigBladeTohandEndY = 100;
 
@@ -57,7 +51,7 @@ module body()
 		}
 
 		// Remove the blade cutout:
-		tcu([-200, -bladeCutoutY/2, -1], [400, bladeCutoutY, sawBladeHeight+1]);
+		tcu([-200, -bladeCutoutY/2, -10], [400, bladeCutoutY, sawBladeHeight+10 + 1]);
 
 		// Trim the fence end:
 		tcu([-200, jigFenceToBladeCtrY, -200], 400);
@@ -66,38 +60,48 @@ module body()
 
 module pulleyWhip()
 {
-	translate([0, jigFenceToBladeCtrY-jigFenceEndWallY, jigPullyWhipCtrZ]) rotate([90,0,0]) difference()
+	translate([0, jigFenceToBladeCtrY-jigFenceEndWallY, jigPullyWhipCtrZ]) rotate([90,0,0]) 
 	{
-		xb = 6;
+		xb = 5.5;
 		yb = 10;
-
-		xt = 4;
-		yt = 10;
 
 		z = 200;
 		hull()
 		{
 			cylinder(d=pulleyWhipOD, h=z);
-
-			// Top:
-			tcu([-xt/2, pulleyWhipOD/2-yt+2, 0], [xt,yt,z]);
 			
-			// Bottom cutout:
+			// Bottom cutout 1:
+			// (sets the overhang angle)
 			tcu([-xb/2, -pulleyWhipOD/2-2, 0], [xb,yb,z]);
 		}
+
+		// Bottom cutout 2:
+		// (trim off the sharp corners)
+		dx = 6;
+		tcu([-xb/2-dx/2, -pulleyWhipOD/2-2, 0], [xb+dx,yb,z]);
 	}
 }
 
 module clip(d=0)
 {
+	// Trim +X:
 	// tcu([-d, -200, -200], 400);
+
+	// Trim -Y:
+	// tcu([-200, -400+d, -200], 400);
+
+	// Trim -Y no ghost offset:
+	// tcu([-200, -400, -200], 400);
 }
 
 if(developmentRender)
 {
-	display() itemModule();
-	displayGhost() sawGhost();
-	// displayGhost() pulleyWhipGhost();
+	// rotate([0,180,0])
+	{
+		display() itemModule();
+		displayGhost() sawGhost();
+		displayGhost() pulleyWhipGhost();
+	}
 }
 else
 {
@@ -108,7 +112,7 @@ module sawGhost()
 {
 	bladeDia = 4.5 * 25.4;
 	bladeThickness = 1;
-	bladeCtrOffsetZ = -bladeDia/2 + 22;
+	bladeCtrOffsetZ = -bladeDia/2 + sawBladeHeight;
 	translate([0, bladeThickness/2, bladeCtrOffsetZ]) rotate([90,0,0]) difference()
 	{
 		cylinder(d=bladeDia, h=bladeThickness);
@@ -119,5 +123,5 @@ module sawGhost()
 module pulleyWhipGhost()
 {
 	pwd = 22;
-	translate([0, jigFenceToBladeCtrY, pwd/2]) rotate([90,0,0]) cylinder(d=pwd, h=200);
+	translate([0, jigFenceToBladeCtrY, pwd/2]) rotate([90,0,0]) cylinder(d=pwd, h=250);
 }
