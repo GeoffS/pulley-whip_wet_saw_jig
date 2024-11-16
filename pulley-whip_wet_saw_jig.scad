@@ -71,7 +71,16 @@ module body()
 			// Blade center marks:
 			for(l = pulleyWhipLenghts)
 			{
-				// bladeCutout(pulleyWhipLength = l);
+				x = jigFenceEndX + 2;
+				y = 1;
+				z = 35;
+				
+				yPos = l - pulleyWhipMinLength;
+				hull()
+				{
+					tcu([-jigFenceEndX/2, yPos-1, 0], [jigFenceEndX, 2, z+2]);
+					tcu([-x/2, yPos-0.5, 0], [x, 1, z]);
+				}
 			}
 		}
 
