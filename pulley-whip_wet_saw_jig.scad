@@ -152,7 +152,7 @@ if(developmentRender)
 }
 else
 {
-	if(makeJig) rotate([0,180,0]) itemModule();
+	if(makeJig) rotate([0,0,90]) rotate([0,180,0]) itemModule();
 	if(makeTest) rotate([0,180,0]) testItem();
 }
 
