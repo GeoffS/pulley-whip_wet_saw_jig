@@ -5,6 +5,13 @@ makeJig = false;
 makeTest = false;
 
 pulleyWhipOD = 22;
+pulleyWhipOemLength = 300 + 143;
+echo(str("pulleyWhipOemLength = ", pulleyWhipOemLength));
+
+pulleyWhipFinalLength = 355; // B.4.6 350mm min. + 55mm extra.
+
+pulleyWhipNominalCutOff = pulleyWhipOemLength - pulleyWhipFinalLength;
+echo(str("pulleyWhipNominalCutOff = ", pulleyWhipNominalCutOff));
 
 sawBladeHeight = 7/8 * 25.4 + 2;
 echo("sawBladeHeight = ", sawBladeHeight);
@@ -12,8 +19,9 @@ echo("sawBladeHeight = ", sawBladeHeight);
 jigFenceEndX = 120;
 jigFenceEndWallY = 6;
 
-jigFenceToBladeCtrY = 50;
-bladeCutoutY = 60;
+jigFenceToBladeCtrY = pulleyWhipNominalCutOff + jigFenceEndWallY;
+echo(str("jigFenceToBladeCtrY = ", jigFenceToBladeCtrY));
+bladeCutoutY = 10;
 
 jigBladeTohandEndY = 100;
 
@@ -71,7 +79,7 @@ module pulleyWhip()
 		xb = 5.5;
 		yb = 10;
 
-		z = 200;
+		z = 300;
 		hull()
 		{
 			cylinder(d=pulleyWhipOD, h=z);
