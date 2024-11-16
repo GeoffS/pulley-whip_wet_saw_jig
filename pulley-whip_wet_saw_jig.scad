@@ -1,14 +1,15 @@
 include <../OpenSCADdesigns/MakeInclude.scad>
+include <../OpenSCADdesigns/chamferedCylinders.scad>
 
 makeJig = false;
 makeTest = false;
 
 pulleyWhipOD = 22;
 
-sawBladeHeight = 7/8 * 25.4;
+sawBladeHeight = 7/8 * 25.4 + 2;
 echo("sawBladeHeight = ", sawBladeHeight);
 
-jigFenceEndX = 100;
+jigFenceEndX = 120;
 jigFenceEndWallY = 6;
 
 jigFenceToBladeCtrY = 50;
@@ -16,7 +17,8 @@ bladeCutoutY = 60;
 
 jigBladeTohandEndY = 100;
 
-jigZ = pulleyWhipOD + 15;
+jigZ = pulleyWhipOD + 20;
+echo(str("jigZ = ", jigZ));
 
 jigPullyWhipCtrZ = pulleyWhipOD/2;
 
@@ -44,17 +46,22 @@ module body()
 			// Fence end:
 			fenceEndOffsetX = jigFenceEndX/2 - jigCornerRadiusFenceEnd;
 			jigFenceEndOffsetY = jigFenceToBladeCtrY;
-			doubleX() translate([fenceEndOffsetX, jigFenceEndOffsetY-jigCornerRadiusFenceEnd, 0]) cylinder(r=jigCornerRadiusFenceEnd, h=jigZ);
+			doubleX() translate([fenceEndOffsetX, jigFenceEndOffsetY-jigCornerRadiusFenceEnd, 0]) corner(r=jigCornerRadiusFenceEnd);
 
 			// Hand end:
 			handEndOffsetX = jigHandEndX/2 - jigCornerRadiusFenceEnd;
 			jighandEndOffsetY = -jigBladeTohandEndY;
-			doubleX() translate([handEndOffsetX, jighandEndOffsetY, 0]) cylinder(r=jigCornerRadiusHandEnd, h=jigZ);
+			doubleX() translate([handEndOffsetX, jighandEndOffsetY, 0]) corner(r=jigCornerRadiusHandEnd);
 		}
 
 		// Remove the blade cutout:
 		tcu([-200, -bladeCutoutY/2, -10], [400, bladeCutoutY, sawBladeHeight+10 + 1]);
 	}
+}
+
+module corner(r)
+{
+	simpleChamferedCylinder(d = 2*r, h = jigZ, cz = 4);
 }
 
 module pulleyWhip()
