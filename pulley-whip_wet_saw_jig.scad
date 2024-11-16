@@ -95,14 +95,14 @@ module clip(d=0)
 
 if(developmentRender)
 {
-	// display() itemModule();
+	display() itemModule();
 	// displayGhost() sawGhost();
 	// displayGhost() pulleyWhipGhost();
 
 	// translate([0,0,jigZ]) rotate([0,180,0]) display() itemModule();
 	// displayGhost() printBedGhost();
 
-	display() testItem();
+	// display() testItem();
 }
 else
 {
