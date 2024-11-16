@@ -1,5 +1,6 @@
 include <../OpenSCADdesigns/MakeInclude.scad>
 include <../OpenSCADdesigns/chamferedCylinders.scad>
+use <../OpenSCADdesigns/torus.scad>
 
 makeJig = false;
 makeTest = false;
@@ -89,6 +90,20 @@ module body()
 		{
 			bladeCutout(pulleyWhipLength = l);
 		}
+
+		// recesss to grip the pulley-whip:
+		od = 120;
+		cd = 40;
+		hull() 
+		{
+			translate([0, -40, 0]) 
+			{
+				translate([0, 0, od/2 + jigZ - 15]) rotate([90,0,0]) torus3a(outsideDiameter=od, circleDiameter=cd);
+				x = 20;
+				y = 20; //cd - 5;
+				tcu([-x/2, -y/2, pulleyWhipOD-7], [x, y, 100]);
+			}
+		}
 	}
 }
 
@@ -137,6 +152,9 @@ module clip(d=0)
 
 	// Trim -Y no ghost offset:
 	// tcu([-200, -400, -200], 400);
+
+	// Trim finder recess:
+	// tcu([-200, -400+d-40, -200], 400);
 }
 
 if(developmentRender)
