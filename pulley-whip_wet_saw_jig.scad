@@ -8,10 +8,10 @@ pulleyWhipOD = 22;
 pulleyWhipOemLength = 300 + 143;
 echo(str("pulleyWhipOemLength = ", pulleyWhipOemLength));
 
-pulleyWhipFinalLength = 355; // B.4.6 350mm min. + 55mm extra.
+pulleyWhipMinLength = 355; // B.4.6 350mm min. + 55mm extra.
 
-pulleyWhipNominalCutOff = pulleyWhipOemLength - pulleyWhipFinalLength;
-echo(str("pulleyWhipNominalCutOff = ", pulleyWhipNominalCutOff));
+pulleyWhipMaxCutOff = pulleyWhipOemLength - pulleyWhipMinLength;
+echo(str("pulleyWhipMaxCutOff = ", pulleyWhipMaxCutOff));
 
 sawBladeHeight = 7/8 * 25.4 + 2;
 echo("sawBladeHeight = ", sawBladeHeight);
@@ -19,7 +19,7 @@ echo("sawBladeHeight = ", sawBladeHeight);
 jigFenceEndX = 120;
 jigFenceEndWallY = 6;
 
-jigFenceToBladeCtrY = pulleyWhipNominalCutOff + jigFenceEndWallY;
+jigFenceToBladeCtrY = pulleyWhipMaxCutOff + jigFenceEndWallY;
 echo(str("jigFenceToBladeCtrY = ", jigFenceToBladeCtrY));
 bladeCutoutY = 10;
 
@@ -62,9 +62,18 @@ module body()
 			doubleX() translate([handEndOffsetX, jighandEndOffsetY, 0]) corner(r=jigCornerRadiusHandEnd);
 		}
 
-		// Remove the blade cutout:
-		tcu([-200, -bladeCutoutY/2, -10], [400, bladeCutoutY, sawBladeHeight+10 + 1]);
+		// Remove the blade cutouts:
+		bladeCutout(pulleyWhipLength = pulleyWhipMinLength);
+		bladeCutout(pulleyWhipLength = 380);
+		bladeCutout(pulleyWhipLength = 400);
+		bladeCutout(pulleyWhipLength = 420);
 	}
+}
+
+module bladeCutout(pulleyWhipLength)
+{
+	y = pulleyWhipLength - pulleyWhipMinLength;
+	tcu([-200, -bladeCutoutY/2 + y, -10], [400, bladeCutoutY, sawBladeHeight+10 + 1]);
 }
 
 module corner(r)
