@@ -1,5 +1,8 @@
 include <../OpenSCADdesigns/MakeInclude.scad>
 
+makeJig = false;
+makeTest = false;
+
 pulleyWhipOD = 22;
 
 sawBladeHeight = 7/8 * 25.4;
@@ -96,12 +99,24 @@ if(developmentRender)
 	// displayGhost() sawGhost();
 	// displayGhost() pulleyWhipGhost();
 
-	translate([0,0,jigZ]) rotate([0,180,0]) display() itemModule();
-	displayGhost() printBedGhost();
+	// translate([0,0,jigZ]) rotate([0,180,0]) display() itemModule();
+	// displayGhost() printBedGhost();
+
+	display() testItem();
 }
 else
 {
-	rotate([0,180,0]) itemModule();
+	if(makeJig) rotate([0,180,0]) itemModule();
+	if(makeTest) rotate([0,180,0]) testItem();
+}
+
+module testItem()
+{
+	difference() 
+	{
+		itemModule();
+		tcu([-200, -80, -20], 400);
+	}
 }
 
 module sawGhost()
