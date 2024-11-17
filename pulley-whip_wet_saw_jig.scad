@@ -34,7 +34,7 @@ echo(str("jigZ = ", jigZ));
 jigPullyWhipCtrZ = pulleyWhipOD/2;
 
 jigCornerRadiusFenceEnd = 5;
-jigCornerRadiusHandEnd = 20;
+jigCornerRadiusHandEnd = 15;
 
 jigHandEndX = pulleyWhipOD + jigCornerRadiusHandEnd;
 
@@ -64,7 +64,7 @@ module body()
 
 			// Middle section dimensions:
 			middleOffsetX = handEndOffsetX + jigCornerRadiusHandEnd - jigCornerRadiusFenceEnd;
-			middleOffsetY = pullyWhipMaxLength - pulleyWhipMinLength + bladeCutoutY/2 + 2.9965; // MAGIC NUMBER WARNING!!!
+			middleOffsetY = pullyWhipMaxLength - pulleyWhipMinLength + bladeCutoutY/2 + 3.22; // MAGIC NUMBER WARNING!!!
 
 			hull()
 			{		
@@ -106,15 +106,15 @@ module body()
 		}
 
 		// recesss to grip the pulley-whip:
-		od = 100;
-		cd = 25;
+		od = 75;
+		cd = 26;
 		hull() 
 		{
 			translate([0, -jigBladeTohandEndY/2, 0]) 
 			{
 				translate([0, 0, od/2 + jigZ - 8]) rotate([90,0,0]) torus3a(outsideDiameter=od, circleDiameter=cd);
 				x = 15;
-				y = 10; //cd - 5;
+				y = 15; //cd - 5;
 				tcu([-x/2, -y/2, pulleyWhipOD-3], [x, y, 100]);
 			}
 		}
