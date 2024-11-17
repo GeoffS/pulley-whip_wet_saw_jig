@@ -10,6 +10,8 @@ pulleyWhipOemLength = 300 + 143;
 echo(str("pulleyWhipOemLength = ", pulleyWhipOemLength));
 
 pulleyWhipMinLength = 355; // B.4.6 350mm min. + 55mm extra.
+pullyWhipMaxLength = 420;
+pulleyWhipLenghts = [pulleyWhipMinLength, 380, 400, pullyWhipMaxLength];
 
 pulleyWhipMaxCutOff = pulleyWhipOemLength - pulleyWhipMinLength;
 echo(str("pulleyWhipMaxCutOff = ", pulleyWhipMaxCutOff));
@@ -17,14 +19,14 @@ echo(str("pulleyWhipMaxCutOff = ", pulleyWhipMaxCutOff));
 sawBladeHeight = 7/8 * 25.4 + 2;
 echo("sawBladeHeight = ", sawBladeHeight);
 
-jigFenceEndX = 120;
+jigFenceEndX = 130;
 jigFenceEndWallY = 6;
 
 jigFenceToBladeCtrY = pulleyWhipMaxCutOff + jigFenceEndWallY;
 echo(str("jigFenceToBladeCtrY = ", jigFenceToBladeCtrY));
 bladeCutoutY = 10;
 
-jigBladeTohandEndY = 100;
+jigBladeTohandEndY = 80;
 
 jigZ = pulleyWhipOD + 20;
 echo(str("jigZ = ", jigZ));
@@ -48,38 +50,50 @@ module itemModule()
 
 module body()
 {
-	pulleyWhipLenghts = [pulleyWhipMinLength, 380, 400, 420];
 	difference()
 	{
 		union()
 		{
+			// Fence end dimensions:
+			fenceEndOffsetX = jigFenceEndX/2 - jigCornerRadiusFenceEnd;
+			jigFenceEndOffsetY = jigFenceToBladeCtrY;
+			
+			// Hand end dimensions:
+			handEndOffsetX = pulleyWhipOD/2 + 4;
+			jighandEndOffsetY = -(jigBladeTohandEndY - jigCornerRadiusHandEnd);
+
+			// Middle section dimensions:
+			middleOffsetX = handEndOffsetX + jigCornerRadiusHandEnd - jigCornerRadiusFenceEnd;
+			middleOffsetY = pullyWhipMaxLength - pulleyWhipMinLength + bladeCutoutY/2 + 2.9965; // MAGIC NUMBER WARNING!!!
+
+			hull()
+			{		
+				// Hand end:		
+				doubleX() translate([handEndOffsetX, jighandEndOffsetY, 0]) corner(r=jigCornerRadiusHandEnd);
+
+				// Middle:
+				doubleX() translate([middleOffsetX, jigFenceEndOffsetY-20, 0]) corner(r=jigCornerRadiusFenceEnd);
+			}
+			
+			// Fence end:
 			hull()
 			{
-				// Fence end:
-				fenceEndOffsetX = jigFenceEndX/2 - jigCornerRadiusFenceEnd;
-				jigFenceEndOffsetY = jigFenceToBladeCtrY;
-				// Middle:
-				doubleX() translate([fenceEndOffsetX, -20, 0]) corner(r=jigCornerRadiusFenceEnd);
-				// Fence end:
+				doubleX() translate([middleOffsetX, middleOffsetY, 0]) corner(r=jigCornerRadiusFenceEnd);
 				doubleX() translate([fenceEndOffsetX, jigFenceEndOffsetY-jigCornerRadiusFenceEnd, 0]) corner(r=jigCornerRadiusFenceEnd);
-
-				// Hand end:
-				handEndOffsetX = pulleyWhipOD/2 + 4;
-				jighandEndOffsetY = -(jigBladeTohandEndY - jigCornerRadiusHandEnd);
-				doubleX() translate([handEndOffsetX, jighandEndOffsetY, 0]) corner(r=jigCornerRadiusHandEnd);
 			}
 
 			// Blade center marks:
 			for(l = pulleyWhipLenghts)
 			{
-				x = jigFenceEndX + 2;
+				middleEndX = (middleOffsetX + jigCornerRadiusFenceEnd) * 2;
+				x = middleEndX + 2;
 				y = 1;
 				z = 35;
 				
 				yPos = l - pulleyWhipMinLength;
 				hull()
 				{
-					tcu([-jigFenceEndX/2, yPos-1, 0], [jigFenceEndX, 2, z+2]);
+					tcu([-middleEndX/2, yPos-1, 0], [middleEndX, 2, z+2]);
 					tcu([-x/2, yPos-0.5, 0], [x, 1, z]);
 				}
 			}
@@ -92,16 +106,16 @@ module body()
 		}
 
 		// recesss to grip the pulley-whip:
-		od = 120;
-		cd = 40;
+		od = 100;
+		cd = 25;
 		hull() 
 		{
-			translate([0, -40, 0]) 
+			translate([0, -jigBladeTohandEndY/2, 0]) 
 			{
-				translate([0, 0, od/2 + jigZ - 15]) rotate([90,0,0]) torus3a(outsideDiameter=od, circleDiameter=cd);
-				x = 20;
-				y = 20; //cd - 5;
-				tcu([-x/2, -y/2, pulleyWhipOD-7], [x, y, 100]);
+				translate([0, 0, od/2 + jigZ - 8]) rotate([90,0,0]) torus3a(outsideDiameter=od, circleDiameter=cd);
+				x = 15;
+				y = 10; //cd - 5;
+				tcu([-x/2, -y/2, pulleyWhipOD-3], [x, y, 100]);
 			}
 		}
 	}
